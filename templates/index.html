@@ -3,11 +3,11 @@
 {% block content %}
     {% for snkr in results %}
         <div class="row inventory-row">
-            <img src="../images/jordan_1_shadow.jpg" class="sneaker-img my-auto">  
+            <img src="../static/images/{{snkr['imgname']}}" class="sneaker-img my-auto">  
             <h4 class="col-3 my-auto sneaker-name">{{ snkr["snkrname"] }}</h4>
             <h4 class="col-3 my-auto sneaker-sku">{{ snkr["sku"] }}</h4>
             <div class="size-list my-auto">
-                <p>Size {{snkr["size"]}} ${{snkr["price"]}}</p>
+                <h5>Size {{snkr["size"]}} ${{snkr["price"]}}</h5>
             </div>
         </div>
     {% endfor %}
