@@ -1,0 +1,24 @@
+.inventory-header {
+    padding-left: 3%;
+    padding-top: 2%;
+}
+
+.sneaker-description {
+    padding-left: 3%;
+    padding-top: 2%;
+}
+
+.inventory-list {
+    padding-left: 3%;
+    padding-top: 2%;
+    padding-right: 2%;
+}
+
+.inventory-row {
+    padding-bottom: 1%;
+}
+
+.sneaker-img {
+    max-width: 400px;
+    max-height: 220px;
+}
