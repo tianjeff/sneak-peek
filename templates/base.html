@@ -1,0 +1,50 @@
+<!doctype html> 
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Sneak Peek: ">
+        <meta name="keywords" content="StockX, Goat, Stadium Goods, Flight Club">
+        <meta name="author" content="Jeffrey Tian">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="../static/css/styles.css?v=1.0">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <title>Sneak Peek</title>
+
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-md navbar-light bg-faded navbar-fixed-top">
+            <div class="container-fluid">
+                <a class="nav-link" href="/"><img src="../static/images/logo.png"></a>
+                <form class="mx-2 my-auto d-inline w-100">
+                    <div class="input-group">
+                        <input type="text" id="search-bar" class="form-control border" value="" placeholder="Search for sneakers by brand, model, color, etc.">
+                    </div>
+                </form>
+                <a href="/create" class="btn btn-success" role="button">Add Sneaker</a>
+            </div>
+        </nav>
+
+        <div class="inventory-header">
+            <h1>My Inventory</h1>
+            <div class="row sneaker-description">
+                <h3 class="col-3 my-auto">Picture</h3>
+                <h3 class="col-3 my-auto">Name</h3>
+                <h3 class="col-3 my-auto">SKU</h3>
+                <h3 class="col-3 my-auto">Size(s)</h3>
+            </div>
+        </div>
+        
+        <div class="inventory-list">
+            {% block content %} {% endblock %}
+        </div>
+    </body>
+</html>
