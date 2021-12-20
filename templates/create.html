@@ -1,0 +1,54 @@
+<!doctype html> 
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Sneak Peek">
+        <meta name="keywords" content="Inventory Tracker">
+        <meta name="author" content="Jeffrey Tian">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="../static/css/styles.css?v=1.0">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <title>Sneak Peek</title>
+
+    </head>
+
+    <body>
+
+        <div class="add-sneaker">
+            <h2>Enter sneaker details</h2>
+            <form action="/" method="POST" novalidate enctype="multipart/form-data">
+                <div class="mx-auto my-2 input-group w-50 justify-content-center">
+                    <input type="text" name="snkrname" class="form-control border w-50" placeholder="Name">
+                </div>
+                <div class="mx-auto my-2 input-group w-50 justify-content-center">
+                    <input type="text" name="sku" class="form-control border w-50" placeholder="SKU">
+                </div>
+                <div class="mx-auto my-2 input-group w-50 justify-content-center">
+                    <input type="text" name="size" class="form-control border w-50" placeholder="Size">
+                </div>
+                <div class="mx-auto my-2 input-group w-50 justify-content-center">
+                    <input type="text" name="price" class="form-control border w-50" placeholder="Price">
+                </div>
+                <div class="mx-auto my-2 input-group w-50 justify-content-center">
+                    <input type="file" name="imgname">
+                </div>
+                <div class="mx-auto my-2 input-group w-50 justify-content-center">
+                    <input type="submit" value="Add Sneaker"/>
+                </div>
+            </form>
+
+            
+            <a href="/" class="btn btn-primary justify-content-center" role="button">Back</a>
+
+        </div>
+
+        
+    </body>
+</html>
