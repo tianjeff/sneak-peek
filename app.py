@@ -7,8 +7,13 @@ from flask import (
 import os
 from werkzeug.utils import secure_filename
 
+import string
+import re
+
 UPLOAD_FOLDER = '/Users/jeffrey/sneak-peek/static/images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+sku_to_img_dict = {}
 
 # app is a single object used by all the code modules in this package
 app = Flask(__name__)  # pylint: disable=invalid-name
@@ -46,6 +51,9 @@ def search():
 
         search_val = form_data['search']
 
+        if not search_val:
+            return redirect('/')
+
         print("searched for: ", search_val)
 
         conn = get_db_connection()
@@ -76,7 +84,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods = ['POST'])
+@app.route('/create', methods = ['POST'])
 def add():
     if request.method == 'POST':
 
@@ -84,48 +92,40 @@ def add():
 
         conn = get_db_connection()
 
-        img_filename = ''
+        img_url = ''
 
-        snkrname = request.form['snkrname']
-        sku = request.form['sku']
-        size = request.form['size']
-        price = request.form['price']
+        snkrname = request.form['snkrname'].strip()
+        sku = request.form['sku'].strip()
+        size = request.form['size'].strip()
+        price = str(request.form['price']).strip()
+        img_url = request.form['image'].strip()
 
         if not snkrname or not sku or not size or not price:
             flash('missing parameters')
             return redirect('/')
 
-        existing_sku = conn.execute('SELECT COUNT(*) FROM sneakers WHERE sku=?', (sku, )).fetchone()['COUNT(*)']
-        if existing_sku != 0:
-            img_filename = conn.execute('SELECT * FROM sneakers WHERE sku=?', (sku, )).fetchone()['imgname']
-        else:
-            if 'imgname' not in request.files:        
-                flash('missing imgname in form')
-                return redirect('/')
+        snkrname = string.capwords(snkrname)
 
-            img = request.files['imgname']
+        sku = sku.replace(' ', '-')
 
-            if img and allowed_file(imgname.filename):
-                img_filename = secure_filename(imgname.filename)
-                img.save(os.path.join(app.config['UPLOAD_FOLDER'], img_filename))
+        price = re.sub("[^0-9]", "", price)
+
+        if sku in sku_to_img_dict:
+            if img_url:
+                sku_to_img_dict[sku] = img_url
+            else:
+                img_url = sku_to_img_dict[sku]
+        elif not img_url:        
+            img_url = 'https://st3.depositphotos.com/23594922/31822/v/600/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg'
+            sku_to_img_dict[sku] = img_url
 
         new_snkrid = conn.execute('SELECT COUNT(*) FROM sneakers').fetchone()['COUNT(*)'] + 1
         results = conn.execute('INSERT INTO sneakers (snkrid, snkrname, sku, imgname, size, price) '
-                    'VALUES (?, ?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, img_filename, size, price, )             
+                    'VALUES (?, ?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, img_url, size, price, )             
                 )
 
         conn.commit()
         results = conn.execute('SELECT * FROM sneakers ORDER BY size ASC').fetchall()
         conn.close()
 
-        snkr_list = []
-        sku_dict = {}
-        for (snkrid, snkrname, sku, imgname, size, price) in results:
-            if sku not in sku_dict:
-                sku_dict[sku] = []
-                snkr_list.append((snkrname, sku, imgname))
-            sku_dict[sku].append((size, price))
-
-        results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
-
-        return render_template('index.html', **results)
+        return redirect('/')

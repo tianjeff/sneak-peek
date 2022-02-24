@@ -13,9 +13,9 @@
 {% block content %}
     {% for (snkrname, sku, imgname) in snkr_list %}
         <div class="row inventory-row">
-            <img src="../static/images/{{imgname}}" class="col-3 sneaker-img my-auto">  
-            <h4 class="col-3 my-auto sneaker-name">{{ snkrname }}</h4>
-            <h4 class="col-3 my-auto sneaker-sku">{{ sku }}</h4>
+            <img src="{{imgname}}" class="col-2 sneaker-img my-auto">  
+            <h4 class="col-2 my-auto sneaker-name">{{ snkrname }}</h4>
+            <h4 class="col-2 my-auto sneaker-sku">{{ sku }}</h4>
             <div class="col-3 size-list my-auto">
                 {% for (size, price) in sku_dict[sku] %}
                     <h5>Size {{ size }} ${{ price }}</h5>

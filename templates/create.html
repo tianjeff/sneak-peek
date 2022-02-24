@@ -23,7 +23,7 @@
 
         <div class="add-sneaker">
             <h2>Enter sneaker details</h2>
-            <form action="/" method="POST" novalidate enctype="multipart/form-data">
+            <form action="/create" method="POST" novalidate enctype="multipart/form-data">
                 <div class="mx-auto my-2 input-group w-50 justify-content-center">
                     <input type="text" name="snkrname" class="form-control border w-50" placeholder="Name">
                 </div>
@@ -37,7 +37,7 @@
                     <input type="text" name="price" class="form-control border w-50" placeholder="Price">
                 </div>
                 <div class="mx-auto my-2 input-group w-50 justify-content-center">
-                    <input type="file" name="imgname">
+                    <input type="text" name="image" class="form-control border w-50" placeholder="Image URL (Optional)">
                 </div>
                 <div class="mx-auto my-2 input-group w-50 justify-content-center">
                     <input type="submit" value="Add Sneaker"/>
