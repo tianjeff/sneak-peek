@@ -9,15 +9,15 @@ from werkzeug.utils import secure_filename
 
 import string
 import re
+import json
 
-UPLOAD_FOLDER = '/Users/jeffrey/sneak-peek/static/images/'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+DEFAULT_URL = 'https://st3.depositphotos.com/23594922/31822/v/600/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg'
 
-sku_to_img_dict = {}
+with open('sku_to_image.json') as infile:
+    sku_to_img_dict = json.load(infile)
 
 # app is a single object used by all the code modules in this package
 app = Flask(__name__)  # pylint: disable=invalid-name
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'T\xd0\x19a9=\xdb$L\x94\xedo\x08mw\xa4\\5m\xcc\xa1\xffn\x13'
 
 def get_db_connection():
@@ -33,10 +33,10 @@ def index():
 
     snkr_list = []
     sku_dict = {}
-    for (snkrid, snkrname, sku, imgname, size, price) in old_results:
+    for (snkrid, snkrname, sku, size, price) in old_results:
         if sku not in sku_dict:
             sku_dict[sku] = []
-            snkr_list.append((snkrname, sku, imgname))
+            snkr_list.append((snkrname, sku, sku_to_img_dict[sku]))
         sku_dict[sku].append((size, price))
 
     results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
@@ -62,12 +62,12 @@ def search():
 
         snkr_list = []
         sku_dict = {}
-        for (snkrid, snkrname, sku, imgname, size, price) in old_results:
+        for (snkrid, snkrname, sku, size, price) in old_results:
             if search_val.lower() not in snkrname.lower() and search_val.lower() not in sku.lower():
                 continue
             if sku not in sku_dict:
                 sku_dict[sku] = []
-                snkr_list.append((snkrname, sku, imgname))
+                snkr_list.append((snkrname, sku, sku_to_img_dict[sku]))
             sku_dict[sku].append((size, price))
 
         results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
@@ -84,6 +84,11 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def dump_sku_to_image_dict():
+    outfile = open('sku_to_image.json', 'w')
+    json.dump(sku_to_img_dict, outfile)
+    outfile.close()
+
 @app.route('/create', methods = ['POST'])
 def add():
     if request.method == 'POST':
@@ -91,8 +96,6 @@ def add():
         # this part isn't working
 
         conn = get_db_connection()
-
-        img_url = ''
 
         snkrname = request.form['snkrname'].strip()
         sku = request.form['sku'].strip()
@@ -110,18 +113,16 @@ def add():
 
         price = re.sub("[^0-9]", "", price)
 
-        if sku in sku_to_img_dict:
-            if img_url:
-                sku_to_img_dict[sku] = img_url
-            else:
-                img_url = sku_to_img_dict[sku]
-        elif not img_url:        
-            img_url = 'https://st3.depositphotos.com/23594922/31822/v/600/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg'
+        if img_url: # create new url or replace current url
             sku_to_img_dict[sku] = img_url
+            dump_sku_to_image_dict()
+        elif sku not in sku_to_img_dict:
+            sku_to_img_dict[sku] = DEFAULT_URL
+            dump_sku_to_image_dict()
 
         new_snkrid = conn.execute('SELECT COUNT(*) FROM sneakers').fetchone()['COUNT(*)'] + 1
-        results = conn.execute('INSERT INTO sneakers (snkrid, snkrname, sku, imgname, size, price) '
-                    'VALUES (?, ?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, img_url, size, price, )             
+        results = conn.execute('INSERT INTO sneakers (snkrid, snkrname, sku, size, price) '
+                    'VALUES (?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, size, price, )             
                 )
 
         conn.commit()
