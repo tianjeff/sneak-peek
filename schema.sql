@@ -6,5 +6,6 @@ CREATE TABLE sneakers(
     sku VARCHAR(20) NOT NULL,
     size INT NOT NULL,
     price INT NOT NULL,
+    loc VARCHAR(20) NOT NULL,
     PRIMARY KEY(snkrid)
 )

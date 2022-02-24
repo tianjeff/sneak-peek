@@ -33,11 +33,11 @@ def index():
 
     snkr_list = []
     sku_dict = {}
-    for (snkrid, snkrname, sku, size, price) in old_results:
+    for (snkrid, snkrname, sku, size, price, loc) in old_results:
         if sku not in sku_dict:
             sku_dict[sku] = []
             snkr_list.append((snkrname, sku, sku_to_img_dict[sku]))
-        sku_dict[sku].append((size, price))
+        sku_dict[sku].append((snkrid, size, price, loc))
 
     results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
     print(results)
@@ -62,13 +62,13 @@ def search():
 
         snkr_list = []
         sku_dict = {}
-        for (snkrid, snkrname, sku, size, price) in old_results:
+        for (snkrid, snkrname, sku, size, price, loc) in old_results:
             if search_val.lower() not in snkrname.lower() and search_val.lower() not in sku.lower():
                 continue
             if sku not in sku_dict:
                 sku_dict[sku] = []
                 snkr_list.append((snkrname, sku, sku_to_img_dict[sku]))
-            sku_dict[sku].append((size, price))
+            sku_dict[sku].append((snkrid, size, price, loc))
 
         results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
         print(results)
@@ -99,8 +99,9 @@ def add():
 
         snkrname = request.form['snkrname'].strip()
         sku = request.form['sku'].strip()
-        size = request.form['size'].strip()
-        price = str(request.form['price']).strip()
+        size = request.form['size']
+        price = request.form['price']
+        loc = request.form['loc'].strip()
         img_url = request.form['image'].strip()
 
         if not snkrname or not sku or not size or not price:
@@ -111,7 +112,8 @@ def add():
 
         sku = sku.replace(' ', '-')
 
-        price = re.sub("[^0-9]", "", price)
+
+        price = int(re.sub("[^0-9]", "", str(price)))
 
         if img_url: # create new url or replace current url
             sku_to_img_dict[sku] = img_url
@@ -121,12 +123,11 @@ def add():
             dump_sku_to_image_dict()
 
         new_snkrid = conn.execute('SELECT COUNT(*) FROM sneakers').fetchone()['COUNT(*)'] + 1
-        results = conn.execute('INSERT INTO sneakers (snkrid, snkrname, sku, size, price) '
-                    'VALUES (?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, size, price, )             
+        results = conn.execute('INSERT INTO sneakers (snkrid, snkrname, sku, size, price, loc) '
+                    'VALUES (?, ?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, size, price, loc, )             
                 )
 
         conn.commit()
-        results = conn.execute('SELECT * FROM sneakers ORDER BY size ASC').fetchall()
         conn.close()
 
         return redirect('/')

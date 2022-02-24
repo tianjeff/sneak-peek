@@ -12,14 +12,36 @@
 
 {% block content %}
     {% for (snkrname, sku, imgname) in snkr_list %}
+        <hr>
         <div class="row inventory-row">
             <img src="{{imgname}}" class="col-2 sneaker-img my-auto">  
             <h4 class="col-3 my-auto sneaker-name">{{ snkrname }}</h4>
             <h4 class="col-2 my-auto sneaker-sku">{{ sku }}</h4>
-            <div class="col-3 size-list my-auto">
-                {% for (size, price) in sku_dict[sku] %}
-                    <div class="row">
-                        <h5>Size {{ size }} ${{ price }}</h5>
+
+            <div class="col-1 my-auto">
+                {% for (snkrid, size, price, loc) in sku_dict[sku] %}
+                        <h5 class="my-3 py-1">{{ size }}</h5>
+                {% endfor %}
+            </div>
+
+            <div class="col-1 my-auto">
+                {% for (snkrid, size, price, loc) in sku_dict[sku] %}
+                        <h5 class="my-3 py-1">${{ price }}</h5>
+                {% endfor %}
+            </div>
+
+            <div class="col-1 my-auto">
+                {% for (snkrid, size, price, loc) in sku_dict[sku] %}
+                    <h5 class="my-3 py-1">{{ loc }}</h5>
+                {% endfor %}
+            </div>
+
+            <div class="col-2 my-auto">
+                {% for (snkrid, size, price, loc) in sku_dict[sku] %}
+                    <div class="my-3 py-1">
+                        <a href="/create" class="btn btn-success mx-auto" role="button">Sold</a>
+                        <a href="/create" class="btn btn-warning mx-auto" role="button">Edit</a>
+                        <a href="/create" class="btn btn-danger mx-auto" role="button">Delete</a>
                     </div>
                 {% endfor %}
             </div>
