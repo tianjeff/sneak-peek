@@ -39,9 +39,9 @@
             <div class="col-2 my-auto">
                 {% for (snkrid, size, price, loc) in sku_dict[sku] %}
                     <div class="my-3 py-1">
-                        <a href="/create" class="btn btn-success mx-auto" role="button">Sold</a>
-                        <a href="/create" class="btn btn-warning mx-auto" role="button">Edit</a>
-                        <a href="/create" class="btn btn-danger mx-auto" role="button">Delete</a>
+                        <a href="/sold/{{ snkrid }}" class="btn btn-success mx-auto" role="button">Sold</a>
+                        <a href="/edit/{{ snkrid }}" class="btn btn-warning mx-auto" role="button">Edit</a>
+                        <a href="/delete/{{ snkrid }}" class="btn btn-danger mx-auto" role="button">Delete</a>
                     </div>
                 {% endfor %}
             </div>

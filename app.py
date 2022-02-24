@@ -80,10 +80,6 @@ def search():
 def create():
     return render_template('create.html')
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 def dump_sku_to_image_dict():
     outfile = open('sku_to_image.json', 'w')
     json.dump(sku_to_img_dict, outfile)
@@ -122,7 +118,7 @@ def add():
             sku_to_img_dict[sku] = DEFAULT_URL
             dump_sku_to_image_dict()
 
-        new_snkrid = conn.execute('SELECT COUNT(*) FROM sneakers').fetchone()['COUNT(*)'] + 1
+        new_snkrid = conn.execute('SELECT MAX(snkrid) FROM sneakers').fetchone()['MAX(snkrid)'] + 1
         results = conn.execute('INSERT INTO sneakers (snkrid, snkrname, sku, size, price, loc) '
                     'VALUES (?, ?, ?, ?, ?, ?)', (new_snkrid, snkrname, sku, size, price, loc, )             
                 )
@@ -131,3 +127,7 @@ def add():
         conn.close()
 
         return redirect('/')
+
+@app.route('/edit/<snkrid>')
+def edit(snkrid):
+    return render_template('create.html')
