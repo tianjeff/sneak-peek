@@ -26,7 +26,7 @@
                 <a class="nav-link" href="/"><img src="../static/images/logo.png"></a>
                 <form class="mx-2 my-auto d-inline w-100" action="/search" method="POST">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control border" placeholder="Search for sneakers by brand, model, SKU, etc.">
+                        <input type="text" name="search" class="form-control border" value="{{ request.form['search'] }}" placeholder="Search for sneakers by brand, model, SKU, etc.">
                         <input type="submit" value="Search"/>
                     </div>
                 </form>
