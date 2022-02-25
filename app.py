@@ -78,7 +78,22 @@ def search():
 
 @app.route('/create')
 def create():
-    return render_template('create.html')
+    conn = get_db_connection()
+    old_results = conn.execute('SELECT * FROM sneakers ORDER BY size ASC').fetchall()
+    conn.close()
+
+    snkr_list = []
+    sku_dict = {}
+    for (snkrid, snkrname, sku, size, price, loc) in old_results:
+        if sku not in sku_dict:
+            sku_dict[sku] = []
+            snkr_list.append((snkrname, sku, sku_to_img_dict[sku]))
+        sku_dict[sku].append((snkrid, size, price, loc))
+
+    results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
+    print(results)
+
+    return render_template('create.html', **results)
 
 def dump_sku_to_image_dict():
     outfile = open('sku_to_image.json', 'w')

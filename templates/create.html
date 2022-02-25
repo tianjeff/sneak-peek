@@ -1,4 +1,4 @@
-<!doctype html> 
+<!-- <!doctype html> 
 
 <html lang="en">
     <head>
@@ -54,4 +54,54 @@
 
         
     </body>
-</html>
+</html> -->
+
+{% extends 'index.html' %}
+
+{% block modal %}
+    <div class="modal" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Enter sneaker details</h2>
+                </div>
+                <div class="modal-body">
+                    <form id="create-form" action="/create" method="POST" novalidate enctype="multipart/form-data">
+                        <div class="mx-auto my-2 input-group justify-content-center">
+                            <input type="text" name="snkrname" class="form-control border" placeholder="Name">
+                        </div>
+                        <div class="mx-auto my-2 input-group justify-content-center">
+                            <input type="text" name="sku" class="form-control border" placeholder="SKU">
+                        </div>
+                        <div class="mx-auto my-2 input-group justify-content-center">
+                            <input type="text" name="size" class="form-control border" placeholder="Size">
+                        </div>
+                        <div class="mx-auto my-2 input-group justify-content-center">
+                            <input type="text" name="price" class="form-control border" placeholder="Price">
+                        </div>
+                        <div class="mx-auto my-2 input-group justify-content-center">
+                            <input type="text" name="loc" class="form-control border" placeholder="Location">
+                        </div>
+                        <div class="mx-auto my-2 input-group justify-content-center">
+                            <input type="text" name="image" class="form-control border" placeholder="Image URL (Optional)">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-secondary">Close</a>
+                    <button type="submit" form="create-form" class="btn btn-primary">Add sneaker</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+            console.log("window is loaded")
+            $("#createModal").modal("show")
+        })
+    </script>
+{% endblock %}
+
