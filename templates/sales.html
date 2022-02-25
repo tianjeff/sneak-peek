@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block tabs %}
+    <div class="row pl-5 ml-2">
+        <ul class="col-4 nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="/">My Inventory</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/sales">My Sales</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block titles %}
+    <div class="row sneaker-description">
+        <h3 class="col-3 my-auto">Name</h3>
+        <h3 class="col-2 my-auto">SKU</h3>
+        <h3 class="col-1 my-auto">Size</h3>
+        <h3 class="col-2 my-auto">Bought $</h3>
+        <h3 class="col-2 my-auto">Sold $</h3>
+        <h3 class="col-2 my-auto">Profit $</h3>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% for (snkrid, snkrname, sku, size, bought, sold, profit) in sales %}
+        <hr>
+        <div class="row">
+            <h4 class="col-3 my-auto sneaker-name">{{ snkrname }}</h4>
+            <h4 class="col-2 my-auto sneaker-sku">{{ sku }}</h4>
+            <h4 class="col-1 my-auto sneaker-sku">{{ size }}</h4>
+            <h4 class="col-2 my-auto sneaker-sku">${{ bought }}</h4>
+            <h4 class="col-2 my-auto sneaker-sku">${{ sold }}</h4>
+            <h4 class="col-2 my-auto sneaker-sku">${{ profit }}</h4>
+        </div>
+    {% endfor %}
+
+{% endblock %}

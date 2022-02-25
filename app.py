@@ -25,8 +25,13 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.route('/')
-def index():
+def get_sales_db_connection():
+    conn = sqlite3.connect('sales.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def get_default_list():
     conn = get_db_connection()
     old_results = conn.execute('SELECT * FROM sneakers ORDER BY size ASC').fetchall()
     conn.close()
@@ -41,7 +46,12 @@ def index():
 
     results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
     print(results)
+    return results
 
+
+@app.route('/')
+def index():
+    results = get_default_list()
     return render_template('index.html', **results)
 
 @app.route('/search', methods = ['POST'])
@@ -77,22 +87,8 @@ def search():
 
 
 @app.route('/create')
-def create():
-    conn = get_db_connection()
-    old_results = conn.execute('SELECT * FROM sneakers ORDER BY size ASC').fetchall()
-    conn.close()
-
-    snkr_list = []
-    sku_dict = {}
-    for (snkrid, snkrname, sku, size, price, loc) in old_results:
-        if sku not in sku_dict:
-            sku_dict[sku] = []
-            snkr_list.append((snkrname, sku, sku_to_img_dict[sku]))
-        sku_dict[sku].append((snkrid, size, price, loc))
-
-    results = {'snkr_list': snkr_list, 'sku_dict': sku_dict}
-    print(results)
-
+def create_main():
+    results = get_default_list()
     return render_template('create.html', **results)
 
 def dump_sku_to_image_dict():
@@ -101,10 +97,8 @@ def dump_sku_to_image_dict():
     outfile.close()
 
 @app.route('/create', methods = ['POST'])
-def add():
+def add_to_database():
     if request.method == 'POST':
-
-        # this part isn't working
 
         conn = get_db_connection()
 
@@ -115,14 +109,13 @@ def add():
         loc = request.form['loc'].strip()
         img_url = request.form['image'].strip()
 
-        if not snkrname or not sku or not size or not price:
+        if not snkrname or not sku or not size or not price or not loc:
             flash('missing parameters')
             return redirect('/')
 
         snkrname = string.capwords(snkrname)
 
         sku = sku.replace(' ', '-')
-
 
         price = int(re.sub("[^0-9]", "", str(price)))
 
@@ -144,5 +137,83 @@ def add():
         return redirect('/')
 
 @app.route('/edit/<snkrid>')
-def edit(snkrid):
-    return render_template('create.html')
+def edit_main(snkrid):
+    conn = get_db_connection()
+    details = conn.execute('SELECT * FROM sneakers WHERE snkrid = ?', snkrid).fetchone()
+    conn.close()
+
+    results = get_default_list()
+
+    results['details'] = details
+    results['sku_to_img_dict'] = sku_to_img_dict
+
+    return render_template('edit.html', **results)
+
+@app.route('/edit/<snkrid>', methods = ['POST'])
+def update_database(snkrid):
+    if request.method == 'POST':
+
+        conn = get_db_connection()
+
+        snkrname = request.form['snkrname'].strip()
+        sku = request.form['sku'].strip()
+        size = request.form['size']
+        price = request.form['price']
+        loc = request.form['loc'].strip()
+        img_url = request.form['image'].strip()
+
+        if not snkrname or not sku or not size or not price or not loc:
+            flash('missing parameters')
+            return redirect('/')
+
+        snkrname = string.capwords(snkrname)
+
+        sku = sku.replace(' ', '-')
+
+        price = int(re.sub("[^0-9]", "", str(price)))
+
+        if img_url: # create new url or replace current url
+            sku_to_img_dict[sku] = img_url
+            dump_sku_to_image_dict()
+        elif sku not in sku_to_img_dict:
+            sku_to_img_dict[sku] = DEFAULT_URL
+            dump_sku_to_image_dict()
+
+        results = conn.execute(
+            "UPDATE sneakers "
+            "SET snkrname = ?, "
+            "sku = ?, "
+            "size = ?, "
+            "price = ?, "
+            "loc = ? "
+            "WHERE snkrid = ?", (snkrname, sku, size, price, loc, snkrid, )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/')
+
+@app.route('/delete/<snkrid>')
+def delete_sneaker(snkrid):
+    conn = get_db_connection()
+
+    cur = conn.execute(
+            "DELETE FROM sneakers WHERE "
+            "snkrid = ?", (snkrid, )
+        )
+    
+    conn.commit()
+    conn.close()
+
+    return redirect('/')
+
+@app.route('/sales')
+def sales():
+    conn = get_sales_db_connection()
+    sales = conn.execute('SELECT * FROM sales').fetchall()
+    conn.close()
+
+    results = {'sales': sales}
+
+    return render_template('sales.html', **results)

@@ -35,26 +35,9 @@
 
         {% block head %} {% endblock %}
 
+        {% block tabs %} {% endblock %}
 
-        <div class="row inventory-header">
-            <div class="col-10 d-flex">
-                <h1>My Inventory</h1>
-            </div>
-            <div class="col-2 text-right">
-                <form action="/create">
-                    <button type="submit" class="btn btn-success ml-auto mr-4">Add Sneaker</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="row sneaker-description">
-            <h3 class="col-2 my-auto">Picture</h3>
-            <h3 class="col-3 my-auto">Name</h3>
-            <h3 class="col-2 my-auto">SKU</h3>
-            <h3 class="col-1 my-auto">Size</h3>
-            <h3 class="col-1 my-auto">Price</h3>
-            <h3 class="col-1 my-auto">Location</h3>
-        </div>
+        {% block titles %} {% endblock %}
         
         <div class="inventory-list">
             {% block content %} {% endblock %}

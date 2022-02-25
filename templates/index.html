@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block head %}
     {% for message in get_flashed_messages() %}
         <div class="alert alert-warning">
@@ -10,33 +9,60 @@
     {% endfor %}
 {% endblock %}
 
+{% block tabs %}
+    <div class="row pl-5 ml-2">
+        <ul class="col-4 nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active " aria-current="page" href="/">My Inventory</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/sales">My Sales</a>
+            </li>
+        </ul>
+        <form action="/create" class="col-8 text-right">
+            <button type="submit" class="btn btn-success ml-auto mr-4">Add Sneaker</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block titles %}
+    <div class="row sneaker-description">
+        <h3 class="col-2 my-auto">Picture</h3>
+        <h3 class="col-3 my-auto">Name</h3>
+        <h3 class="col-2 my-auto">SKU</h3>
+        <h3 class="col-1 my-auto">Size</h3>
+        <h3 class="col-1 my-auto">Price</h3>
+        <h3 class="col-1 my-auto">Location</h3>
+    </div>
+{% endblock %}
+
 {% block content %}
     {% for (snkrname, sku, imgname) in snkr_list %}
         <hr>
-        <div class="row inventory-row">
-            <img src="{{imgname}}" class="col-2 sneaker-img my-auto">  
+        <div class="row">
+            <img src="{{imgname}}" class="col-2 sneaker-img my-auto py-1">  
             <h4 class="col-3 my-auto sneaker-name">{{ snkrname }}</h4>
             <h4 class="col-2 my-auto sneaker-sku">{{ sku }}</h4>
 
-            <div class="col-1 my-auto">
+            <div class="col-1 my-auto py-1">
                 {% for (snkrid, size, price, loc) in sku_dict[sku] %}
-                        <h5 class="my-3 py-1">{{ size }}</h5>
+                    <h5 class="my-3 py-1">{{ size }}</h5>
                 {% endfor %}
             </div>
 
-            <div class="col-1 my-auto">
+            <div class="col-1 my-auto py-1">
                 {% for (snkrid, size, price, loc) in sku_dict[sku] %}
-                        <h5 class="my-3 py-1">${{ price }}</h5>
+                    <h5 class="my-3 py-1">${{ price }}</h5>
                 {% endfor %}
             </div>
 
-            <div class="col-1 my-auto">
+            <div class="col-1 my-auto py-1">
                 {% for (snkrid, size, price, loc) in sku_dict[sku] %}
                     <h5 class="my-3 py-1">{{ loc }}</h5>
                 {% endfor %}
             </div>
 
-            <div class="col-2 my-auto">
+            <div class="col-2 my-auto py-1">
                 {% for (snkrid, size, price, loc) in sku_dict[sku] %}
                     <div class="my-3 py-1">
                         <a href="/sold/{{ snkrid }}" class="btn btn-success mx-auto" role="button">Sold</a>

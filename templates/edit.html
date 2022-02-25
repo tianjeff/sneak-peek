@@ -5,33 +5,33 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Enter sneaker details</h2>
+                    <h2>Edit sneaker details</h2>
                 </div>
                 <div class="modal-body">
-                    <form id="create-form" action="/create" method="POST" novalidate enctype="multipart/form-data">
+                    <form id="create-form" action="/edit/{{ details['snkrid'] }}" method="POST" novalidate enctype="multipart/form-data">
                         <div class="mx-auto my-2 input-group justify-content-center">
-                            <input type="text" name="snkrname" class="form-control border" placeholder="Name">
+                            <input type="text" name="snkrname" class="form-control border" value="{{ details['snkrname'] }}">
                         </div>
                         <div class="mx-auto my-2 input-group justify-content-center">
-                            <input type="text" name="sku" class="form-control border" placeholder="SKU">
+                            <input type="text" name="sku" class="form-control border" value="{{ details['sku'] }}">
                         </div>
                         <div class="mx-auto my-2 input-group justify-content-center">
-                            <input type="text" name="size" class="form-control border" placeholder="Size">
+                            <input type="text" name="size" class="form-control border" value="{{ details['size'] }}">
                         </div>
                         <div class="mx-auto my-2 input-group justify-content-center">
-                            <input type="text" name="price" class="form-control border" placeholder="Price">
+                            <input type="text" name="price" class="form-control border" value="{{ details['price'] }}">
                         </div>
                         <div class="mx-auto my-2 input-group justify-content-center">
-                            <input type="text" name="loc" class="form-control border" placeholder="Location">
+                            <input type="text" name="loc" class="form-control border" value="{{ details['loc'] }}">
                         </div>
                         <div class="mx-auto my-2 input-group justify-content-center">
-                            <input type="text" name="image" class="form-control border" placeholder="Image URL (Optional)">
+                            <input type="text" name="image" class="form-control border" value="{{ sku_to_img_dict[details['sku']] }}">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <a href="/" class="btn btn-secondary">Close</a>
-                    <button type="submit" form="create-form" class="btn btn-primary">Add sneaker</button>
+                    <button type="submit" form="create-form" class="btn btn-primary">Edit sneaker</button>
                 </div>
             </div>
         </div>
